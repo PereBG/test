@@ -9,8 +9,38 @@
         <title>PrimeFaces Test</title>
     </h:head>
     <h:body>
-        
-        <h1>#{testView.testString}</h1>
-        
+        <h:form id = "timelineForm">
+	        <p:timeline styleClass="timeline-regulatory" style="width:99% !important;" width="100%" eventStyle="dot" axisOnTop="true" var="testObject"
+						dropActiveStyleClass="ui-state-highlight" dropHoverStyleClass="ui-state-hover" editable="false" end="#{testView.endDate}"
+						groupsChangeable="false" groupsOnRight="false" id="timeline" max="#{testView.maxDate}" min="#{testView.minDate}"
+						minHeight="550" preloadFactor="0.2" selectable="true" showButtonNew="false" showNavigation="false" start="#{testView.startDate}"
+						timeZone="UTC" value="#{testView.timeline}" widgetVar="timelineJS" zoomMax="#{testView.zoomMax}" timeChangeable="false"
+						zoomMin="#{testView.zoomMin}" animate="false" animateZoom="false" zoomable="false" snapEvents="false" stackEvents="true" >
+					 
+					    <p:ajax event="lazyload" update="@none" listener="#{testView.onLazyLoad}" />
+						<p:ajax event="rangechanged" listener="#{testView.onRangeChanged}" update="@this"/>
+						
+						<p:ajax event="select" listener="#{testView.onTestObjectSelect}" 
+							oncomplete="PF('regulatoryActDialog').show()" update="@form"/>
+					    
+					    <h:panelGrid
+							style="border-left-color:red;" columns="2">
+							<h:outputText title="#{testObject.name}" value="#{testObject.description}" />
+						</h:panelGrid>
+						
+					 
+					</p:timeline>	
+							
+					<p:commandButton  style="margin-right:5px;" onclick="PF('timelineJS').zoom(0.2); loadEventsDelayed();" 
+						type="button" value="Zoom In"/>
+					<p:commandButton  style="margin-right:5px;" onclick="PF('timelineJS').zoom(-0.2); loadEventsDelayed();" 
+						type="button"  value="Zoom Out"/>
+					<p:commandButton  style="margin-right:5px;" onclick="PF('timelineJS').move(-0.2); loadEventsDelayed();"
+						type="button" value="Scroll Left"/>
+					<p:commandButton style="margin-right:5px;" onclick="PF('timelineJS').move(0.2); loadEventsDelayed();"
+						type="button" value="Scroll Right"/>
+																
+	        <p:remoteCommand process="@this" delay="800" name="loadEventsDelayed" oncomplete="PF('timelineJS').fireLazyLoading();"/>
+        </h:form>
     </h:body>
 </html>
